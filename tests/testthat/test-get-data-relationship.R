@@ -21,11 +21,11 @@ test_that("Data is bound by column (based on id)", {
   # Create arguments list
   arguments <- list(data1 = d1,
                     data2 = d2)
-  returned <- vortex::get_data_relationship(data, id = "id")
-  d1 <- tibble::rownames_to_column(d1)
-  d2 <- tibble::rownames_to_column(d2)
+  returned <- vortex::get_data_relationship(arguments, by = "id")
+
+  d1 <- tibble::rownames_to_column(d1, var = "data1.rowname")
+  d2 <- tibble::rownames_to_column(d2, var = "data2.rowname")
   expected <- dplyr::inner_join(d1, d2, by = "id")
-  expected <- tibble::column_to_rownames(expected)
   expect_equal(returned, expected)
 })
 
