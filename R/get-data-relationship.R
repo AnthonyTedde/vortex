@@ -1,14 +1,29 @@
 get_data_relationship <- function(data, ...){
   if(is.null(names(data))) names(data) <- 1:length(data)
 
-  fun <- get("map2", asNamespace("purrr"))
-  data <- list(.x = data,
-               .y = names(data),
-               .f = ~tibble::rownames_to_column(
-                 .x,
-                 var = paste(.y, "rowname", sep = "."))) %>%
-    do.call(what = fun, .)
+  `%!in%` <- purrr::negate(`%in%`)
+  if('by' %!in% names(list(...))){
+    data <- data %>% purrr::map(tibble::rownames_to_column)
+    # current <- match.call()[[1]] %>% deparse() %>% get()
+    return(vortex::get_data_relationship(data, by = "rowname"))
+  }
 
-  Reduce(function(x, y) dplyr::inner_join(x, y, ...),
-         data)
+
+  if(list(...)$by != "rowname"){
+    fun <- get("map2", asNamespace("purrr"))
+    data <- list(.x = data,
+                 .y = names(data),
+                 .f = ~tibble::rownames_to_column(
+                   .x,
+                   var = paste(.y, "rowname", sep = "."))) %>%
+      do.call(what = fun, .)
+  }
+
+  bound_df <- Reduce(function(x, y) dplyr::inner_join(x, y, ...),
+                     data)
+
+  tryCatch(return(bound_df %>% tibble::column_to_rownames()),
+    error = function(cond){
+      return(bound_df)}
+  )
 }

@@ -41,7 +41,7 @@ test_that("Data is bound by column (based on rowname)", {
   # Create arguments list
   arguments <- list(data1 = d1,
                     data2 = d2)
-  returned <- vortex::get_data_relationship(data)
+  returned <- vortex::get_data_relationship(arguments)
   d1 <- tibble::rownames_to_column(d1)
   d2 <- tibble::rownames_to_column(d2)
   expected <- dplyr::inner_join(d1, d2, by = "rowname")
