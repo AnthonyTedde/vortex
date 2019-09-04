@@ -1,6 +1,11 @@
 get_column_selection <- function(data){
+
+  name <- if(is.null(names(data))){
+    paste0("df", 1:length(data))
+  }else names(data)
+
   columns <- structure(purrr::map(data, names),
-                       names = paste0("l", 1:length(data)))
+                       names = name)
 
   all_columns <- Reduce(dplyr::union, columns)
   sparse <- columns %>%
@@ -20,6 +25,6 @@ get_column_selection <- function(data){
     purrr::map(~structure(
       list(.x, Reduce(dplyr::intersect, columns[.x])),
       names = c("data.frame", "columns")
-    ))
-
+    )) %>%
+    purrr::discard(~purrr::is_empty(.x$columns))
 }
