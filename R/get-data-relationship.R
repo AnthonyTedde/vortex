@@ -1,11 +1,11 @@
-get_data_relationship <- function(data, ...){
+crossbind <- function(data, ...){
   if(is.null(names(data))) names(data) <- 1:length(data)
 
   `%!in%` <- purrr::negate(`%in%`)
   if('by' %!in% names(list(...))){
     data <- data %>% purrr::map(tibble::rownames_to_column)
     # current <- match.call()[[1]] %>% deparse() %>% get()
-    return(vortex::get_data_relationship(data, by = "rowname"))
+    return(vortex::crossbind(data, by = "rowname"))
   }
 
 
