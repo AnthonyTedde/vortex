@@ -6,15 +6,21 @@ bind <- function(data){
 }
 
 crossbind <- function(data, ...){
-  if(is.null(names(data))) names(data) <- 1:length(data)
+  names(data) <- vortex::get_name(data)
 
   `%!in%` <- purrr::negate(`%in%`)
   if('by' %!in% names(list(...))){
     data <- data %>% purrr::map(tibble::rownames_to_column)
-    # current <- match.call()[[1]] %>% deparse() %>% get()
     return(vortex::crossbind(data, by = "rowname"))
   }
 
+  #############################################################################
+  ####
+  ####  TODO: Fix Issue:
+  ####   -> When multiple data.frame which cannot be conbined all together
+  ####      The cross combination failed. A method to create cluster is needed.
+  ####
+  #############################################################################
 
   if(list(...)$by != "rowname"){
     fun <- get("map2", asNamespace("purrr"))

@@ -105,3 +105,19 @@ test_that("Data is rowbound (with unnamed list of data.frames)",{
       names(returned)
   ))
 })
+
+test_that("Bind combines rowbound and crossbound", {
+  argument_rb <- list(rb_d1,
+                      rb_d2,
+                      rb_d3,
+                      rb_d4)
+  argument_cb <-  list(cb_d1,
+                       cb_d2,
+                       cb_d3)
+  grouped_argument <- c(argument_rb, argument_cb)
+  rb <- vortex::rowbind(grouped_argument)
+  cb <- vortex::crossbind(grouped_argument)
+  b <- vortex::bind(c(argument_cb, argument_rb))
+  expect_equal(b, list(crossbind = cb,
+                       rowbind = rb))
+})
