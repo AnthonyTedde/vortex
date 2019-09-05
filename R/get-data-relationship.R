@@ -27,3 +27,15 @@ get_data_relationship <- function(data, ...){
       return(bound_df)}
   )
 }
+
+rowbind <- function(data, ...){
+  columns <- vortex::get_column_selection(data)
+
+  newdataset_name <- purrr::map(columns, ~paste(.x$data.frame, collapse = "_"))
+
+  purrr::map(columns, function(x){
+    data[x$data.frame] %>% purrr::map(~.x[, x$columns]) %>%
+      purrr::reduce(rbind)
+  })%>%
+      structure(names = newdataset_name)
+}
