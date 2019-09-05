@@ -1,3 +1,10 @@
+bind <- function(data){
+  list(
+    crossbind = vortex::crossbind(data),
+    rowbind = vortex::rowbind(data)
+  )
+}
+
 crossbind <- function(data, ...){
   if(is.null(names(data))) names(data) <- 1:length(data)
 
@@ -29,6 +36,7 @@ crossbind <- function(data, ...){
 }
 
 rowbind <- function(data, ...){
+  names(data) <- vortex::get_name(data)
   columns <- vortex::get_column_selection(data)
 
   newdataset_name <- purrr::map(columns, ~paste(.x$data.frame, collapse = "_"))

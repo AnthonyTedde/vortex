@@ -1,8 +1,6 @@
 get_column_selection <- function(data){
 
-  name <- if(is.null(names(data))){
-    paste0("df", 1:length(data))
-  }else names(data)
+  name <- vortex::get_name(data)
 
   columns <- structure(purrr::map(data, names),
                        names = name)
@@ -27,4 +25,10 @@ get_column_selection <- function(data){
       names = c("data.frame", "columns")
     )) %>%
     purrr::discard(~purrr::is_empty(.x$columns))
+}
+
+get_name <- function(data, prefix = "df"){
+  if(is.null(names(data))){
+    paste0("df", 1:length(data))
+  }else names(data)
 }
